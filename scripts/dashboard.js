@@ -1,4 +1,4 @@
-// Dashboard Data - 17 columns matching reference image
+// Dashboard Data - 17 columns matching reference
 const dashboardData = [
     { name: 'Kowshik', category: 'Lot1', assignedHigh: 147, closedHigh: 37, openHigh: 90, assignedMedium: 160, closedMedium: 48, openMedium: 110, assignedLow: 165, closedLow: 33, openLow: 130, holdHigh: 20, holdMedium: 2, holdLow: 2, total: 472, closed: 118, open: 330 },
     { name: 'Karthikeyan', category: 'Lot1', assignedHigh: 69, closedHigh: 61, openHigh: 0, assignedMedium: 79, closedMedium: 54, openMedium: 12, assignedLow: 69, closedLow: 53, openLow: 10, holdHigh: 8, holdMedium: 13, holdLow: 6, total: 217, closed: 168, open: 22 },
@@ -19,15 +19,14 @@ function renderTable() {
         const name = row.name.toUpperCase();
         const initials = name.substring(0, 2);
         const pct = row.total > 0 ? Math.round((row.closed / row.total) * 100) : 0;
-
-        // Update totals
+        
         totalHigh += row.assignedHigh;
         totalMedium += row.assignedMedium;
         totalLow += row.assignedLow;
         totalHold += row.holdHigh + row.holdMedium + row.holdLow;
         totalClosed += row.closed;
         totalOpen += row.open;
-
+        
         return `
             <tr>
                 <td>
@@ -66,8 +65,8 @@ function updateTimestamp() {
     const now = new Date();
     document.getElementById('timestamp').textContent = 
         now.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) + 
-        ' • ' + 
-        now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) + ' IST';
+        ' ' + 
+        now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 }
 
 function animateValue(element, start, end, duration) {
@@ -98,34 +97,27 @@ function toggleTheme() {
     localStorage.setItem('theme', newTheme);
 }
 
-// Initialize
 function init() {
-    // Load saved theme
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
     document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-
+    
     renderTable();
     updateTimestamp();
-
-    // Animate hero stats
+    
     setTimeout(() => {
         animateValue(document.getElementById('totalComments'), 0, totalHigh + totalMedium + totalLow, 1000);
         animateValue(document.getElementById('totalClosed'), 0, totalClosed, 1000);
         animateValue(document.getElementById('totalOpen'), 0, totalOpen, 1000);
         animateValue(document.getElementById('totalHold'), 0, totalHold, 1000);
-        
         animateValue(document.getElementById('highCount'), 0, totalHigh, 800);
         animateValue(document.getElementById('mediumCount'), 0, totalMedium, 800);
         animateValue(document.getElementById('lowCount'), 0, totalLow, 800);
-        animateValue(document.getElementById('holdCount'), 0, totalHold, 800);
-    }, 300);
+    }, 200);
 }
 
-// Auto-refresh every 3 hours
 setInterval(() => {
     updateTimestamp();
 }, 3 * 60 * 60 * 1000);
 
-// Run on load
 init();
